@@ -1,0 +1,54 @@
+.banner-section {
+	border:1px solid #ddd;
+	border-bottom:0;
+	background:#f9f9f9;
+}
+.bn-opts label{
+	font-size:12px;
+	font-weight:700;
+	width:100%;
+	display:block;
+	float:left;	
+}
+.bn-opts .bn-input {
+	padding:30px 10px;
+	border-bottom:1px solid #ddd;
+	border-top:1px solid #fff;
+}
+.bn-opts small {
+	display:block;
+	color:#999;
+}
+.bn-opts input[type="text"] {
+	width:70%;
+	font-size:12px;
+	padding:4px;
+	color:#333;
+	line-height:1em;
+	background:#f3f3f3;
+}
+.bn-input input:focus, .bn-input textarea:focus{
+	background:#fff;
+}
+.clearfix {
+	clear: both;
+}
+.bannerakia-list {
+	width: 100%;
+	list-style-type: none;
+}
+.unordered-list, .ordered-list {
+	width: 100%;
+}
+#bannerakia-form input[type="button"] {
+	width: 25%;
+}
+.banner-img {
+	margin-bottom: 15px;
+	display: block;
+}
+.banner-img img {
+	border: none;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+}
