@@ -58,6 +58,7 @@ function display_banner_meta_box( $banner ) {
 	// Retrieve homepage post field values
 	$bannerURL = esc_html( get_post_meta( $banner->ID, 'banner-url', true ) );
 	$image = esc_html( get_post_meta( $banner->ID, 'image', true ) );
+	$image_id = esc_html( get_post_meta( $banner->ID, 'image-id', true ) );
 	
 	?>
 	<div class="banner-section bn-opts">
@@ -70,6 +71,7 @@ function display_banner_meta_box( $banner ) {
 			<label for="image_uri">Image</label>
 			<img width="250px" class="custom_media_image" src="<?php echo $image; ?>" /><br />
 			<input id="image_uri" type="text" class="widefat custom_media_url" name="image_uri" value="<?php echo $image; ?>">
+			<input id="image_id" name="image_id" type="hidden" class="custom_media_id" value="<?php echo $image_id; ?>" />
 			<a href="#" class="button custom_media_upload">Upload</a>
 		</div>
 	</div>
@@ -83,6 +85,9 @@ function add_banner_fields( $banner_id, $banner ) {
 		}
 		if ( isset( $_POST['image_uri'] ) && $_POST['image_uri'] != '' ) {
 			update_post_meta( $banner_id, 'image', $_POST['image_uri'] );
+		}
+		if ( isset( $_POST['image_id'] ) && $_POST['image_id'] != '' ) {
+			update_post_meta( $banner_id, 'image-id', $_POST['image_id'] );
 		}
 	}
 }
@@ -206,12 +211,13 @@ class bannerakia extends WP_Widget {
 				$results->the_post(); 
 				$url = get_post_meta( get_the_ID(), 'banner-url', true );
 				$image = get_post_meta( get_the_ID(), 'image', true );
+				$image_id = get_post_meta( get_the_ID(), 'image-id', true );
 				?>
 			
 				<li>
 					<div class="banner-img">
 						<a href="<?php echo $url; ?>" title="<?php the_title(); ?>">
-							<?php echo wp_get_attachment_image(pn_get_attachment_id_from_url($image), array(300,300)); ?>
+							<?php echo wp_get_attachment_image($image_id , array(300,300)); ?>
 						</a>
 					</div>
 				</li>
@@ -221,28 +227,5 @@ class bannerakia extends WP_Widget {
 	}
 }
 add_action('widgets_init', create_function('', 'return register_widget("bannerakia");'));
-
-function pn_get_attachment_id_from_url( $attachment_url = '' ) {
-	global $wpdb;
-	$attachment_id = false;
-
-	if ( '' == $attachment_url )
-		return;
-	
-	$upload_dir_paths = wp_upload_dir();
-
-	if ( false !== strpos( $attachment_url, $upload_dir_paths['baseurl'] ) ) {
-		// If this is the URL of an auto-generated thumbnail, get the URL of the original image
-		$attachment_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
-
-		// Remove the upload path base directory from the attachment URL
-		$attachment_url = str_replace( $upload_dir_paths['baseurl'] . '/', '', $attachment_url );
-
-		// Finally, run a custom database query to get the attachment ID from the modified attachment URL
-		$attachment_id = $wpdb->get_var( $wpdb->prepare( "SELECT wposts.ID FROM $wpdb->posts wposts, $wpdb->postmeta wpostmeta WHERE wposts.ID = wpostmeta.post_id AND wpostmeta.meta_key = '_wp_attached_file' AND wpostmeta.meta_value = '%s' AND wposts.post_type = 'attachment'", $attachment_url ) );
-	}
-
-	return $attachment_id;
-}
 
 ?>
